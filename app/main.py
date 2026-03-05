@@ -5,6 +5,7 @@ from fastapi.exceptions import RequestValidationError
 from app.core.config import settings
 from app.core.responses import APIResponse, ErrorResponse
 from app.features.auth.router import router as auth_router
+from app.features.sessions.router import router as sessions_router
 from app.infrastructure.redis import redis_client
 
 
@@ -82,6 +83,7 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
 
 
 app.include_router(auth_router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
+app.include_router(sessions_router, prefix=f"{settings.API_V1_STR}/sessions", tags=["sessions"])
 
 
 @app.get("/health")
