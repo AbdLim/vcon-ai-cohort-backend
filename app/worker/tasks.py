@@ -30,16 +30,11 @@ def process_session_task(session_id: int, filename: str, filepath: str):
     from app.features.sessions.models import Session
     from sqlalchemy import select
     
-    # 1. Read file from disk
+    # 1. Upload to Cloudinary using filepath directly
     try:
-        with open(filepath, "rb") as f:
-            file_content = f.read()
-            
-        # 2. Upload to "Cloudinary" stub
-        # Since the task needs an event loop for async functions, we run the asyncio loop manually.
-        public_url = asyncio.run(CloudinaryService.upload_file(file_content, filename))
+        public_url = CloudinaryService.upload_file_from_path(filepath, filename)
         
-        # 3. Update the database
+        # 2. Update the database
         db = SessionLocal()
         session_record = db.execute(select(Session).where(Session.id == session_id)).scalar_one_or_none()
         

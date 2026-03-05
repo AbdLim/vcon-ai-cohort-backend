@@ -1,25 +1,42 @@
 import logging
-import uuid
-import asyncio
+import cloudinary
+import cloudinary.uploader
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+# Configure cloudinary using the settings URL
+if settings.CLOUDINARY_URL:
+    # Adding cloudinary.config will extract the properties from CLOUDINARY_URL if it's set
+    pass # Cloudinary automatically picks up CLOUDINARY_URL from the environment by default, but we can explicitly set it
+
 class CloudinaryService:
     """
-    A temporary stub service for Cloudinary file uploads.
+    Service for uploading files and managing assets on Cloudinary.
     """
     
     @staticmethod
-    async def upload_file(file_content: bytes, filename: str) -> str:
+    def upload_file_from_path(filepath: str, filename: str = None) -> str:
         """
-        Simulates uploading a file to Cloudinary and returning a public URL.
+        Uploads a file to Cloudinary from a local filepath and returns the public URL.
         """
-        logger.info(f"Simulating Cloudinary upload for {filename}...")
-        await asyncio.sleep(1) # Simulate network delay
+        logger.info(f"Uploading file {filepath} to Cloudinary...")
         
-        # In a real scenario, this would use cloudinary.uploader.upload
-        mock_id = str(uuid.uuid4())[:8]
-        public_url = f"https://res.cloudinary.com/mock-cloud/video/upload/v1/{mock_id}/{filename}"
-        
-        logger.info(f"Mock upload complete: {public_url}")
-        return public_url
+        # Upload the file
+        # resource_type="auto" allows video, image, and raw files to be handled.
+        try:
+            response = cloudinary.uploader.upload(
+                filepath, 
+                resource_type="auto",
+                public_id=filename,
+                use_filename=True,
+                unique_filename=True
+            )
+            
+            public_url = response.get("secure_url")
+            logger.info(f"Upload complete: {public_url}")
+            return public_url
+            
+        except Exception as e:
+            logger.error(f"Cloudinary upload failed: {e}")
+            raise
