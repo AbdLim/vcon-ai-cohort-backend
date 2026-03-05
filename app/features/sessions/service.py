@@ -1,15 +1,32 @@
 import uuid
 import tempfile
 from typing import Optional
-from fastapi import UploadFile
+from fastapi import UploadFile, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.features.sessions.schemas import UploadResponse
 from app.features.sessions.models import Session
+from app.features.sessions.repository import SessionsRepository
 from app.worker.tasks import process_session_task
+from typing import Optional, Sequence
 
 class SessionsService:
     def __init__(self, session: AsyncSession):
+        self.repository = SessionsRepository(session)
         self.session = session
+
+    async def get_session(self, session_id: int) -> Session:
+        session_record = await self.repository.get_by_id(session_id)
+        if not session_record:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Session with id {session_id} not found"
+            )
+        return session_record
+
+    async def get_sessions(self, skip: int = 0, limit: int = 100, cohort_id: Optional[int] = None) -> Sequence[Session]:
+        if cohort_id:
+            return await self.repository.get_by_cohort(cohort_id, skip, limit)
+        return await self.repository.get_all(skip, limit)
 
     async def upload_session(self, title: str, cohort_id: int, file: UploadFile) -> UploadResponse:
         """

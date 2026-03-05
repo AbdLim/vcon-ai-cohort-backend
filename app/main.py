@@ -5,7 +5,10 @@ from fastapi.exceptions import RequestValidationError
 from app.core.config import settings
 from app.core.responses import APIResponse, ErrorResponse
 from app.features.auth.router import router as auth_router
+from app.features.organizations.router import router as organizations_router
+from app.features.cohorts.router import router as cohorts_router
 from app.features.sessions.router import router as sessions_router
+from app.features.participants.router import router as participants_router
 from app.infrastructure.redis import redis_client
 
 
@@ -83,7 +86,10 @@ async def general_exception_handler(request: Request, exc: Exception) -> JSONRes
 
 
 app.include_router(auth_router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
+app.include_router(organizations_router, prefix=f"{settings.API_V1_STR}/organizations", tags=["organizations"])
+app.include_router(cohorts_router, prefix=f"{settings.API_V1_STR}/cohorts", tags=["cohorts"])
 app.include_router(sessions_router, prefix=f"{settings.API_V1_STR}/sessions", tags=["sessions"])
+app.include_router(participants_router, prefix=f"{settings.API_V1_STR}/participants", tags=["participants"])
 
 
 @app.get("/health")

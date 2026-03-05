@@ -1,11 +1,29 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, status
-from typing import Annotated
+from fastapi import APIRouter, Depends, UploadFile, File, Form, status, Query
+from typing import Annotated, List, Optional
 from app.features.sessions.schemas import UploadResponse, SessionResponse, UrlUploadRequest
 from app.features.sessions.service import SessionsService
 from app.features.sessions.dependencies import get_sessions_service
 from app.core.responses import SuccessResponse, APIResponse
 
 router = APIRouter()
+
+@router.get("/", response_model=APIResponse[List[SessionResponse]])
+async def list_sessions(
+    service: Annotated[SessionsService, Depends(get_sessions_service)],
+    skip: int = 0,
+    limit: int = 100,
+    cohort_id: Optional[int] = None
+):
+    sessions = await service.get_sessions(skip=skip, limit=limit, cohort_id=cohort_id)
+    return SuccessResponse.create("Sessions retrieved successfully", data=sessions)
+
+@router.get("/{session_id}", response_model=APIResponse[SessionResponse])
+async def get_session(
+    session_id: int,
+    service: Annotated[SessionsService, Depends(get_sessions_service)]
+):
+    session_record = await service.get_session(session_id)
+    return SuccessResponse.create("Session retrieved successfully", data=session_record)
 
 @router.post("/upload", response_model=APIResponse[UploadResponse], status_code=status.HTTP_202_ACCEPTED)
 async def upload_session(
