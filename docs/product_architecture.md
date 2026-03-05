@@ -32,13 +32,13 @@ After evaluating the options between Python (FastAPI) and Node.js/TypeScript (Ex
 
 ### Data Persistence
 * **Database ORM:** `sqlalchemy` + `psycopg2-binary` (PostgreSQL for relational data — users, cohorts, sessions).
-* **vCon Storage:** AWS S3 or Google Cloud Storage (using `boto3`). vCons can become large with attached audio; they should be stored as JSON/binary blobs in object storage, while metadata is indexed in PostgreSQL or a vector DB (e.g., Pinecone/Milvus) for search.
+* **vCon Storage:** Cloudinary. vCons can become large with attached audio; they should be stored as JSON/binary blobs in object storage (Cloudinary), while metadata is indexed in PostgreSQL or a vector DB (e.g., Pinecone/Milvus) for search.
 
 ## 4. System Components & Flow
 
 1. **Ingestion Service (File Upload API):** 
    - Receives `.mp4` or `.mp3` files via frontend multipart upload.
-   - Saves raw audio/video to temporary storage or S3.
+   - Saves raw audio/video to temporary storage or Cloudinary.
    - Triggers the async transcription worker upon successful upload.
 2. **vCon Constructor (The Factory):** 
    - Takes raw transcripts and metadata.
@@ -48,7 +48,7 @@ After evaluating the options between Python (FastAPI) and Node.js/TypeScript (Ex
    - Worker 1: Diarization & Speaker ID.
    - Worker 2: Semantic Analysis (Summary, Topic Clustering).
    - Worker 3: Cohort Health Scoring.
-   - Appends all results as extensions to the vCon object and saves it to S3.
+   - Appends all results as extensions to the vCon object and saves it to Cloudinary.
 4. **API Layer (FastAPI):** 
    - Serves the Dashboard frontend.
    - Endpoints for `/cohorts/{id}/health`, `/sessions/{id}/intelligence`, `/participants/{id}/engagement`.

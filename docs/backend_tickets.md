@@ -30,7 +30,7 @@ This document outlines the Phase 1 (MVP) implementation tickets for the backend 
   * Response: `202 Accepted`, `{ "task_id": "...", "status": "processing" }`
 * **Tasks:**
   * Handle large file uploads via FastAPI `UploadFile`.
-  * Save file to disk/S3 and dispatch a Celery task to begin audio processing.
+  * Save file to disk/Cloudinary and dispatch a Celery task to begin audio processing.
 
 ### [BE-04] Implement vCon Object Constructor
 * **Description:** Build the module that converts raw meeting data into a standard vCon object.
@@ -38,7 +38,7 @@ This document outlines the Phase 1 (MVP) implementation tickets for the backend 
 * **Tasks:**
   * Create a Python service class that initializes a `Vcon` object.
   * Append session metadata (parties, datetime) to the vCon.
-  * Save the base vCon JSON to AWS S3 / Cloud Storage.
+  * Save the base vCon JSON to Cloudinary.
 
 ## Epic 3: AI Intelligence Pipeline (Celery Workers)
 
