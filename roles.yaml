@@ -1,0 +1,11 @@
+# Role-Based Access Control Configuration
+
+# Admin has full access
+admin:
+    - "*"
+
+# Users have limited access
+user:
+    - "users:me:read"
+    - "users:me:update"
+    - "auth:logout"
