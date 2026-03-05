@@ -12,6 +12,9 @@ from app.db.base import Base
 # Import all models here so Alembic can see them
 from app.features.auth.models import Auth
 from app.features.users.models import User
+from app.features.cohorts.models import Organization, Cohort
+from app.features.participants.models import Participant
+from app.features.sessions.models import Session
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

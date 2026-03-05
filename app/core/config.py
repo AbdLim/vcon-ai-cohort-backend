@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
 
+    # Celery
+    CELERY_BROKER_URL: str
+    CELERY_RESULT_BACKEND: str
+
     # Security
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
