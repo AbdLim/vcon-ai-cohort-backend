@@ -13,6 +13,9 @@ class SessionBase(BaseModel):
 class SessionCreate(SessionBase):
     pass
 
+class UrlUploadRequest(SessionBase):
+    url: str
+
 class SessionResponse(SessionBase):
     id: int
     vcon_url: Optional[str] = None

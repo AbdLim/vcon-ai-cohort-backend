@@ -53,3 +53,30 @@ class SessionsService:
             task_id=task.id,
             status="processing"
         )
+
+    async def import_session_url(self, title: str, cohort_id: int, url: str) -> UploadResponse:
+        """
+        Handles the initialization of a session upload from a URL.
+        Creates a session record in the database with "processing" status and dispatches a Celery task.
+        """
+        new_session = Session(
+            title=title,
+            cohort_id=cohort_id,
+            status="processing"
+        )
+        self.session.add(new_session)
+        await self.session.flush() # Get the database ID
+        
+        task = process_session_task.delay(
+            session_id=new_session.id, 
+            filename=None,
+            filepath=None,
+            file_url=url
+        )
+        
+        await self.session.commit()
+        
+        return UploadResponse(
+            task_id=task.id,
+            status="processing"
+        )

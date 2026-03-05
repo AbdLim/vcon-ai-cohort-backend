@@ -18,7 +18,7 @@ def dummy_task(arg: str):
     return result
 
 @celery_app.task(name="process_session_task")
-def process_session_task(session_id: int, filename: str, filepath: str):
+def process_session_task(session_id: int, filename: str = None, filepath: str = None, file_url: str = None):
     """
     Background task to process the uploaded session.
     Uploads the file to Cloudinary and updates the session Database record.
@@ -30,9 +30,14 @@ def process_session_task(session_id: int, filename: str, filepath: str):
     from app.features.sessions.models import Session
     from sqlalchemy import select
     
-    # 1. Upload to Cloudinary using filepath directly
+    # 1. Upload to Cloudinary
     try:
-        public_url = CloudinaryService.upload_file_from_path(filepath, filename)
+        if file_url:
+            public_url = CloudinaryService.upload_file_from_url(file_url, filename)
+        elif filepath:
+            public_url = CloudinaryService.upload_file_from_path(filepath, filename)
+        else:
+            raise ValueError("Neither filepath nor file_url provided")
         
         # 2. Update the database
         db = SessionLocal()
@@ -52,7 +57,7 @@ def process_session_task(session_id: int, filename: str, filepath: str):
         # Could set status to "failed" here
     finally:
         # Cleanup
-        if os.path.exists(filepath):
+        if filepath and os.path.exists(filepath):
             os.remove(filepath)
             
     return {"session_id": session_id, "status": "completed", "vcon_url": public_url}
