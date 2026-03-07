@@ -6,9 +6,21 @@ from app.core.config import settings
 logger = logging.getLogger(__name__)
 
 # Configure cloudinary using the settings URL
+import os
+from urllib.parse import urlparse
+
 if settings.CLOUDINARY_URL:
-    # Adding cloudinary.config will extract the properties from CLOUDINARY_URL if it's set
-    pass # Cloudinary automatically picks up CLOUDINARY_URL from the environment by default, but we can explicitly set it
+    try:
+        # Expected format: cloudinary://api_key:api_secret@cloud_name
+        parsed_url = urlparse(settings.CLOUDINARY_URL)
+        cloudinary.config(
+            cloud_name=parsed_url.hostname,
+            api_key=parsed_url.username,
+            api_secret=parsed_url.password,
+            secure=True
+        )
+    except Exception as e:
+        logger.error(f"Failed to parse CLOUDINARY_URL: {e}")
 
 class CloudinaryService:
     """
