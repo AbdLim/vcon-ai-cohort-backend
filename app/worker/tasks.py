@@ -26,11 +26,17 @@ def process_session_task(session_id: int, filename: str = None, filepath: str = 
     logger.info(f"Starting processing for Session ID: {session_id}")
     import os
     from app.services.cloudinary_service import CloudinaryService
-    from app.db.session import SessionLocal
+    from app.db.session import AsyncSessionLocal
+    import app.features.auth.models # ensure this model is mapped
+    import app.features.users.models # ensure this model is mapped
+    import app.features.cohorts.models # ensure this model is mapped
+    import app.features.participants.models # ensure this model is mapped
     from app.features.sessions.models import Session
     from sqlalchemy import select
+    import asyncio
     
     # 1. Upload to Cloudinary
+    public_url = None
     try:
         if file_url:
             public_url = CloudinaryService.upload_file_from_url(file_url, filename)
@@ -39,18 +45,21 @@ def process_session_task(session_id: int, filename: str = None, filepath: str = 
         else:
             raise ValueError("Neither filepath nor file_url provided")
         
-        # 2. Update the database
-        db = SessionLocal()
-        session_record = db.execute(select(Session).where(Session.id == session_id)).scalar_one_or_none()
-        
-        if session_record:
-            session_record.vcon_url = public_url
-            session_record.status = "completed"
-            db.commit()
-            logger.info(f"Session DB record {session_id} updated successfully.")
-        else:
-            logger.error(f"Session ID {session_id} not found in DB.")
-        db.close()
+        # 2. Update the database using an async wrapper within the sync task
+        async def update_db():
+            async with AsyncSessionLocal() as db:
+                result = await db.execute(select(Session).where(Session.id == session_id))
+                session_record = result.scalar_one_or_none()
+                
+                if session_record:
+                    session_record.vcon_url = public_url
+                    session_record.status = "completed"
+                    await db.commit()
+                    logger.info(f"Session DB record {session_id} updated successfully.")
+                else:
+                    logger.error(f"Session ID {session_id} not found in DB.")
+                    
+        asyncio.run(update_db())
         
     except Exception as e:
         logger.error(f"Error processing session {session_id}: {e}")
