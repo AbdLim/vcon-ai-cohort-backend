@@ -52,7 +52,7 @@ def process_session_task(session_id: int, filename: str = None, filepath: str = 
                 session_record = result.scalar_one_or_none()
                 
                 if session_record:
-                    session_record.vcon_url = public_url
+                    session_record.vcon_file_url = public_url
                     session_record.status = "completed"
                     await db.commit()
                     logger.info(f"Session DB record {session_id} updated successfully.")

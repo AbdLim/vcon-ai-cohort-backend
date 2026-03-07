@@ -16,10 +16,12 @@ class SessionCreate(SessionBase):
 class UrlUploadRequest(SessionBase):
     url: str
 
+from pydantic import Field
+
 class SessionResponse(SessionBase):
     id: int
-    vcon_url: Optional[str] = None
-    transcription_url: Optional[str] = None
+    vcon_url: Optional[str] = Field(default=None, validation_alias="vcon_file_url")
+    transcription_url: Optional[str] = Field(default=None, validation_alias="audio_file_url")
     status: str
     created_at: datetime
     updated_at: datetime
