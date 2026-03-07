@@ -10,10 +10,10 @@ async def test_signup(client: AsyncClient):
     )
     assert response.status_code == 201
     data = response.json()
-    assert data["email"] == "newuser@example.com"
-    assert data["profile"]["full_name"] == "Test User"
-    assert "id" in data
-    assert "password" not in data
+    assert data["data"]["email"] == "newuser@example.com"
+    assert data["data"]["profile"]["full_name"] == "Test User"
+    assert "id" in data["data"]
+    assert "password" not in data["data"]
 
 @pytest.mark.asyncio
 async def test_login(client: AsyncClient):
@@ -30,9 +30,9 @@ async def test_login(client: AsyncClient):
     )
     assert response.status_code == 200
     data = response.json()
-    assert "access_token" in data
-    assert "refresh_token" in data
-    assert data["token_type"] == "bearer"
+    assert "access_token" in data["data"]
+    assert "refresh_token" in data["data"]
+    assert data["data"]["token_type"] == "bearer"
 
 @pytest.mark.asyncio
 async def test_refresh_token(client: AsyncClient):
@@ -45,7 +45,7 @@ async def test_refresh_token(client: AsyncClient):
         f"{settings.API_V1_STR}/auth/login",
         json={"email": "refresh@example.com", "password": "password123"}
     )
-    refresh_token = login_res.json()["refresh_token"]
+    refresh_token = login_res.json()["data"]["refresh_token"]
     
     # Refresh
     response = await client.post(
@@ -54,9 +54,9 @@ async def test_refresh_token(client: AsyncClient):
     )
     assert response.status_code == 200
     data = response.json()
-    assert "access_token" in data
-    assert "refresh_token" in data
-    assert data["refresh_token"] != refresh_token # Should be rotated
+    assert "access_token" in data["data"]
+    assert "refresh_token" in data["data"]
+    assert data["data"]["refresh_token"] != refresh_token # Should be rotated
 
 @pytest.mark.asyncio
 async def test_logout(client: AsyncClient):
@@ -69,7 +69,7 @@ async def test_logout(client: AsyncClient):
         f"{settings.API_V1_STR}/auth/login",
         json={"email": "logout@example.com", "password": "password123"}
     )
-    tokens = login_res.json()
+    tokens = login_res.json()["data"]
     access_token = tokens["access_token"]
     refresh_token = tokens["refresh_token"]
     

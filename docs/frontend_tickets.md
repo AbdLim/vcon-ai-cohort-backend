@@ -29,6 +29,7 @@ This document outlines the Phase 1 (MVP) implementation tickets for the frontend
   * Render summary KPI cards.
   * Render list/table of active cohorts.
   * **Hackathon MVP:** Build an "Upload Recording" button and modal to send `multipart/form-data` files to `POST /api/sessions/upload`.
+  * **Hackathon MVP:** Build "Import from URL" support in the same modal, sending a JSON payload `{title, cohort_id, url}` to `POST /api/sessions/url`.
 
 ### [FE-04] Implement Cohort Detail View
 * **Description:** Display specific cohort health and a list of its sessions.

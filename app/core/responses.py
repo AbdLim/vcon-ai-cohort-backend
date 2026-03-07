@@ -1,5 +1,5 @@
 from typing import Any, Generic, Optional, TypeVar
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 T = TypeVar("T")
 
@@ -12,7 +12,7 @@ class APIResponse(BaseModel, Generic[T]):
     data: Optional[T] = Field(default=None, description="Response data")
     error: Optional[dict[str, Any]] = Field(default=None, description="Error details")
 
-    class Config:
+    model_config = ConfigDict(
         json_schema_extra = {
             "example": {
                 "status": "success",
@@ -21,6 +21,7 @@ class APIResponse(BaseModel, Generic[T]):
                 "error": None,
             }
         }
+    )
 
 
 class SuccessResponse(BaseModel, Generic[T]):

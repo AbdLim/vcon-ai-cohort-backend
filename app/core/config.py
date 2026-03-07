@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     CELERY_BROKER_URL: str
     CELERY_RESULT_BACKEND: str
 
+    # Cloudinary
+    CLOUDINARY_URL: str = ""
+
     # Security
     SECRET_KEY: str
     ALGORITHM: str = "HS256"

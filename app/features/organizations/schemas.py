@@ -2,20 +2,18 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
-class CohortBase(BaseModel):
+class OrganizationBase(BaseModel):
     name: str
     description: Optional[str] = None
-    organization_id: int
 
-class CohortCreate(CohortBase):
+class OrganizationCreate(OrganizationBase):
     pass
 
-class CohortUpdate(BaseModel):
+class OrganizationUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    organization_id: Optional[int] = None
 
-class CohortResponse(CohortBase):
+class OrganizationResponse(OrganizationBase):
     id: int
     created_at: datetime
     updated_at: datetime

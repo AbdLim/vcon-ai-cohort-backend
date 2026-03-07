@@ -11,6 +11,9 @@ from unittest.mock import MagicMock
 # Import models to register them with Base
 from app.features.auth.models import Auth
 from app.features.users.models import User
+from app.features.cohorts.models import Organization, Cohort
+from app.features.participants.models import Participant
+from app.features.sessions.models import Session
 
 # Use SQLite for tests
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"

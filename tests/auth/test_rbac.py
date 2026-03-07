@@ -26,7 +26,7 @@ async def test_rbac_admin_access(client: AsyncClient, db_session: AsyncSession):
         f"{settings.API_V1_STR}/auth/login",
         json={"email": email, "password": password}
     )
-    token = login_res.json()["access_token"]
+    token = login_res.json()["data"]["access_token"]
     
     # Access admin endpoint
     response = await client.get(
@@ -34,7 +34,7 @@ async def test_rbac_admin_access(client: AsyncClient, db_session: AsyncSession):
         headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 200
-    assert response.json() == {"status": "admin"}
+    assert response.json()["data"]["role"] == "admin"
 
 @pytest.mark.asyncio
 async def test_rbac_user_access_denied(client: AsyncClient):
@@ -52,7 +52,7 @@ async def test_rbac_user_access_denied(client: AsyncClient):
         f"{settings.API_V1_STR}/auth/login",
         json={"email": email, "password": password}
     )
-    token = login_res.json()["access_token"]
+    token = login_res.json()["data"]["access_token"]
     
     # Access admin endpoint
     response = await client.get(
@@ -60,4 +60,4 @@ async def test_rbac_user_access_denied(client: AsyncClient):
         headers={"Authorization": f"Bearer {token}"}
     )
     assert response.status_code == 403
-    assert response.json()["detail"] == "Not enough permissions"
+    assert response.json()["message"] == "Not enough permissions"
