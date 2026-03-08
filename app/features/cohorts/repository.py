@@ -9,7 +9,7 @@ class CohortRepository:
         self.session = session
 
     async def get_by_id(self, cohort_id: int) -> Optional[Cohort]:
-        statement = select(Cohort).where(Cohort.id == cohort_id)
+        statement = select(Cohort).options(selectinload(Cohort.sessions)).where(Cohort.id == cohort_id)
         result = await self.session.execute(statement)
         return result.scalar_one_or_none()
         
