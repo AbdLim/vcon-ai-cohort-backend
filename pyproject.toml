@@ -26,6 +26,10 @@ dependencies = [
     "python-multipart>=0.0.22",
     "vcon>=0.9.0",
     "cloudinary>=1.44.1",
+    "openai>=2.26.0",
+    "instructor>=1.14.5",
+    "httpx>=0.28.1",
+    "psycopg2-binary>=2.9.11",
 ]
 
 [dependency-groups]

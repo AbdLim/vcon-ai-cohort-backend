@@ -16,6 +16,16 @@ class VconBuilder:
         # Add foundational metadata
         self._initialize_metadata()
         
+    @classmethod
+    def from_json(cls, vcon_json: str, session_id: int, cohort_id: int):
+        """Reconstruct a VconBuilder from an existing JSON string"""
+        instance = cls.__new__(cls)
+        instance.session_id = session_id
+        instance.cohort_id = cohort_id
+        instance.vcon = vcon.Vcon()
+        instance.vcon.vcon_dict = json.loads(vcon_json)
+        return instance
+        
     def _initialize_metadata(self):
         """Set standard metadata for the session vCon"""
         self.vcon.add_attachment(
