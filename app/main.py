@@ -10,6 +10,7 @@ from app.features.organizations.router import router as organizations_router
 from app.features.cohorts.router import router as cohorts_router
 from app.features.sessions.router import router as sessions_router
 from app.features.participants.router import router as participants_router
+from app.features.dashboard.router import router as dashboard_router
 from app.infrastructure.redis import redis_client
 
 
@@ -101,6 +102,7 @@ app.include_router(organizations_router, prefix=f"{settings.API_V1_STR}/organiza
 app.include_router(cohorts_router, prefix=f"{settings.API_V1_STR}/cohorts", tags=["cohorts"])
 app.include_router(sessions_router, prefix=f"{settings.API_V1_STR}/sessions", tags=["sessions"])
 app.include_router(participants_router, prefix=f"{settings.API_V1_STR}/participants", tags=["participants"])
+app.include_router(dashboard_router, prefix=f"{settings.API_V1_STR}/dashboard", tags=["dashboard"])
 
 
 @app.get("/health")

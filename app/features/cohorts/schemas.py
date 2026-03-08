@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
+from app.features.sessions.schemas import SessionResponse
 
 class CohortBase(BaseModel):
     name: str
@@ -21,3 +22,6 @@ class CohortResponse(CohortBase):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class CohortWithSessionsResponse(CohortResponse):
+    sessions: List[SessionResponse] = []

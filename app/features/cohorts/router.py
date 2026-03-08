@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, Query
 from typing import Annotated, List, Optional
 from app.core.responses import SuccessResponse, APIResponse
-from app.features.cohorts.schemas import CohortResponse, CohortCreate, CohortUpdate
+from app.features.cohorts.schemas import CohortResponse, CohortCreate, CohortUpdate, CohortWithSessionsResponse
 from app.features.cohorts.service import CohortService
 from app.features.cohorts.dependencies import get_cohort_service
 
@@ -25,7 +25,7 @@ async def create_cohort(
     cohort = await service.create_cohort(data)
     return SuccessResponse.create("Cohort created successfully", data=cohort)
 
-@router.get("/{cohort_id}", response_model=APIResponse[CohortResponse])
+@router.get("/{cohort_id}", response_model=APIResponse[CohortWithSessionsResponse])
 async def get_cohort(
     cohort_id: int,
     service: Annotated[CohortService, Depends(get_cohort_service)]
