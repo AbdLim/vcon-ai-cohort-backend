@@ -28,6 +28,7 @@ class SessionResponse(SessionBase):
     action_items_json: Optional[list] = None
     questions_asked_json: Optional[list] = None
     talk_listen_ratios_json: Optional[dict] = None
+    key_moments_json: Optional[list] = None
     created_at: datetime
     updated_at: datetime
     

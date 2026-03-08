@@ -12,6 +12,7 @@ class AnalysisResult(BaseModel):
     action_items: list[str] = Field(description="List of action items")
     questions_asked: list[str] = Field(description="Questions asked during the session")
     talk_listen_ratios: dict[str, float] = Field(description="Ratios of talk/listen per speaker if identifiable, otherwise general ratios. Example: {'Speaker 1': 0.6, 'Speaker 2': 0.4}")
+    key_moments: list[str] = Field(description="Key moments or highlights from the session")
 
 class AIService:
     @staticmethod

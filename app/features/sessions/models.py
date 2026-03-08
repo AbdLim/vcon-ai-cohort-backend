@@ -31,6 +31,7 @@ class Session(Base):
     action_items_json: Mapped[list | None] = mapped_column(JSON, nullable=True)
     questions_asked_json: Mapped[list | None] = mapped_column(JSON, nullable=True)
     talk_listen_ratios_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    key_moments_json: Mapped[list | None] = mapped_column(JSON, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
