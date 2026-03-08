@@ -353,6 +353,7 @@ def generate_semantic_analysis_task(session_id: int):
                     session_db.action_items_json = analysis_result.get("action_items", [])
                     session_db.questions_asked_json = analysis_result.get("questions_asked", [])
                     session_db.talk_listen_ratios_json = analysis_result.get("talk_listen_ratios", {})
+                    session_db.key_moments_json = analysis_result.get("key_moments", [])
                     session_db.status = "completed"
                     db.commit()
         except Exception as e:
